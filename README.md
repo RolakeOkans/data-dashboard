@@ -1,52 +1,45 @@
-# Web Development Project 5 - Brewery Data Dashboard
+# Web Development Project 6 - Brewery Data Dashboard Part 2
 
 Submitted by: **Rolake**
 
-This web app: **A data dashboard that fetches and displays brewery data from the Open Brewery DB API. Users can search breweries by name, city, or state, and filter by brewery type. The dashboard also displays summary statistics about the fetched data.**
+This web app: **An interactive brewery data dashboard built with React that fetches data from the Open Brewery DB API. Features include data visualizations, a searchable and filterable list, and a detail view for each brewery accessible via React Router.**
 
-Time spent: **4.5** hours spent in total
+Time spent: **3** hours spent in total
 
 ## Required Features
 
 The following **required** functionality is completed:
 
-- [x] **The site has a dashboard displaying a list of data fetched using an API call**
-  - [x] The dashboard displays at least 10 unique items, one per row
-  - [x] The dashboard includes at least two features in each row
-  - [x] The useEffect() React hook and async/await syntax are used
-- [x] **The app dashboard includes at least three summary statistics about the data**
-  - [x] Total number of breweries displayed
-  - [x] Number of unique states represented
-  - [x] Number of microbreweries in the dataset
-- [x] **A search bar allows the user to search for an item in the fetched data**
-  - [x] The search bar correctly filters items in the list
-  - [x] The list dynamically updates as the user types
-- [x] **An additional filter allows the user to restrict displayed items by specified categories**
-  - [x] The filter restricts items using brewery type (different attribute than search bar)
-  - [x] The dashboard list dynamically updates as the user adjusts the filter
+- [x] **Clicking on an item in the list view displays more details about it**
+  - [x] Clicking on an item in the dashboard list navigates to the detail view for that item
+  - [x] Detail view includes extra information not included in the dashboard view (street address, phone, coordinates)
+  - [x] The same sidebar is displayed in detail view as in dashboard view
+- [x] **Each detail view of an item has a direct, unique link to that item's page**
+- [x] **The app includes at least two unique charts developed using the fetched data**
+  - [x] Pie chart showing breweries broken down by type
+  - [x] Bar chart showing top 8 states by brewery count
 
 The following **optional** features are implemented:
 
-- [x] Multiple filters can be applied simultaneously
-- [ ] Filters use different input types
-- [ ] User can enter specific bounds for filter values
+- [ ] The site's customized dashboard contains more content that explains what is interesting about the data
+- [ ] The site allows users to toggle between different data visualizations
 
 The following **additional** features are implemented:
 
-* Results count displays how many breweries match the current search and filter
-* Each brewery row includes a clickable link to the brewery's website
+* Search and filter from Part 1 are retained and work alongside the new features
+* Results count updates dynamically based on search and filter
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented required features:
 
-<img src='https://raw.githubusercontent.com/RolakeOkans/data-dashboard/main/brewery%20dashboard.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://raw.githubusercontent.com/RolakeOkans/data-dashboard/main/dashboard_part2.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with Kap
 
 ## Notes
 
-The main challenge was learning how useEffect works differently from onClick — data fetches automatically when the page loads rather than waiting for user interaction. Combining search and filter simultaneously using chained .filter() calls was also a new pattern.
+The main challenges this week were learning React Router — specifically how to pass data between routes using props and how useParams extracts the ID from the URL. Installing and configuring Recharts was also new but the documentation made it straightforward once I understood the component structure.
 
 ## License
 
