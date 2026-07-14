@@ -1,19 +1,14 @@
 import { useState, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts'
+import BreweryDetail from './BreweryDetail'
 import './App.css'
 
-const App = () => {
-  const [breweries, setBreweries] = useState([])
+const COLORS = ['#b45309', '#d97706', '#f59e0b', '#fbbf24', '#fcd34d', '#fde68a', '#78716c', '#a8a29e', '#57534e', '#44403c']
+
+const Dashboard = ({ breweries }) => {
   const [search, setSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState('all')
-
-  useEffect(() => {
-    const fetchBreweries = async () => {
-      const response = await fetch('https://api.openbrewerydb.org/v1/breweries?per_page=50')
-      const data = await response.json()
-      setBreweries(data)
-    }
-    fetchBreweries()
-  }, [])
 
   const filteredBreweries = breweries
     .filter(b => typeFilter === 'all' || b.brewery_type === typeFilter)
@@ -26,6 +21,23 @@ const App = () => {
   const totalCount = breweries.length
   const uniqueStates = [...new Set(breweries.map(b => b.state))].filter(Boolean).length
   const microCount = breweries.filter(b => b.brewery_type === 'micro').length
+
+  const typeData = Object.entries(
+    breweries.reduce((acc, b) => {
+      acc[b.brewery_type] = (acc[b.brewery_type] || 0) + 1
+      return acc
+    }, {})
+  ).map(([name, value]) => ({ name, value }))
+
+  const stateData = Object.entries(
+    breweries.reduce((acc, b) => {
+      if (b.state) acc[b.state] = (acc[b.state] || 0) + 1
+      return acc
+    }, {})
+  )
+    .map(([name, value]) => ({ name, value }))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 8)
 
   return (
     <div className="App">
@@ -46,6 +58,42 @@ const App = () => {
         <div className="stat-card">
           <h3>{microCount}</h3>
           <p>Microbreweries</p>
+        </div>
+      </div>
+
+      <div className="charts">
+        <div className="chart-card">
+          <h3>Breweries by Type</h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <PieChart>
+              <Pie
+                data={typeData}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={80}
+                label={({ name, value }) => `${name}: ${value}`}
+              >
+                {typeData.map((_, index) => (
+                  <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="chart-card">
+          <h3>Top 8 States by Brewery Count</h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={stateData}>
+              <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="value" fill="#b45309" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
@@ -87,7 +135,7 @@ const App = () => {
           <span>Website</span>
         </div>
         {filteredBreweries.map((brewery) => (
-          <div key={brewery.id} className="brewery-row">
+          <Link to={`/brewery/${brewery.id}`} key={brewery.id} className="brewery-row">
             <span>{brewery.name}</span>
             <span className={`type-badge ${brewery.brewery_type}`}>
               {brewery.brewery_type}
@@ -96,14 +144,36 @@ const App = () => {
             <span>{brewery.state || 'N/A'}</span>
             <span>
               {brewery.website_url
-                ? <a href={brewery.website_url} target="_blank" rel="noreferrer">Visit</a>
+                ? <span className="visit-link">Visit</span>
                 : 'N/A'
               }
             </span>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
+  )
+}
+
+const App = () => {
+  const [breweries, setBreweries] = useState([])
+
+  useEffect(() => {
+    const fetchBreweries = async () => {
+      const response = await fetch('https://api.openbrewerydb.org/v1/breweries?per_page=50')
+      const data = await response.json()
+      setBreweries(data)
+    }
+    fetchBreweries()
+  }, [])
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Dashboard breweries={breweries} />} />
+        <Route path="/brewery/:id" element={<BreweryDetail breweries={breweries} />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
